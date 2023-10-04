@@ -15,6 +15,10 @@ package design5;
  */
 public abstract class PointCP5
 {
+  // Instance variables **********************************************
+
+  private char coordinateType;
+
   //Instance methods **************************************************
  
   public abstract double getX();

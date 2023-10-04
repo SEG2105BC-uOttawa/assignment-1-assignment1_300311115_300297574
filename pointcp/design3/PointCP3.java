@@ -3,6 +3,8 @@ package design3;
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at http://www.site.uottawa.ca/school/research/lloseng/
 
+import design5.PointCP5;
+
 /**
  * This class contains instances of coordinates in either polar or
  * cartesian format.  It also provides the utilities to convert
@@ -13,11 +15,11 @@ package design3;
  * @author Dr Timothy C. Lethbridge
  * @version July 2000
  */
-public class PointCP3
+public class PointCP3 extends PointCP5
 {
   //Instance variables ************************************************
 
-  
+  private char coordinateType;
   /**
    * Contains the current value of X 
    */
@@ -34,10 +36,19 @@ public class PointCP3
   /**
    * Constructs a coordinate object, with a type identifier.
    */
-  public PointCP3(double x, double y)
+  public PointCP3(char type, double x, double y)
   {
-    this.x = x;
-    this.y = y;
+    if(type != 'C' && type != 'P')
+    throw new IllegalArgumentException();
+    
+    if(String.valueOf(type).toUpperCase() == "P"){
+      this.y = y;
+      this.x = x;
+    }else{
+      this.y = y;
+      this.x = x;
+      convertStorageToPolar();
+    }
   }
 	
   
@@ -53,6 +64,38 @@ public class PointCP3
   public double getTheta() {return (Math.sin(Math.toRadians(y)) * x);}
   
 	
+    /**
+   * Converts Cartesian coordinates to Polar coordinates.
+   */
+  public void convertStorageToPolar()
+  {
+    if(coordinateType != 'P')
+    {
+      //Calculate RHO and THETA
+      double temp = getRho();
+      y = getTheta();
+      x = temp;
+      
+      coordinateType = 'P';  //Change coord type identifier
+    }
+  }
+	
+  /**
+   * Converts Polar coordinates to Cartesian coordinates.
+   */
+  public void convertStorageToCartesian()
+  {
+    if(coordinateType != 'C')
+    {
+      //Calculate X and Y
+      double temp = getX();
+      y = getY();
+      x = temp;
+   
+      coordinateType = 'C';	//Change coord type identifier
+    }
+  }
+
  
   /**
    * Calculates the distance in between two points using the Pythagorean
@@ -86,7 +129,7 @@ public class PointCP3
     double X = getX();
     double Y = getY();
         
-    return new PointCP3(
+    return new PointCP3('C',
       (Math.cos(radRotation) * X) - (Math.sin(radRotation) * Y),
       (Math.sin(radRotation) * X) + (Math.cos(radRotation) * Y));
   }

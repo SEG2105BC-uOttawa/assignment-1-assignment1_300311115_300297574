@@ -3,6 +3,8 @@ package design2;
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at http://www.site.uottawa.ca/school/research/lloseng/
 
+import design5.PointCP5;
+
 /**
  * This class contains instances of coordinates in either polar or
  * cartesian format.  It also provides the utilities to convert
@@ -13,10 +15,11 @@ package design2;
  * @author Dr Timothy C. Lethbridge
  * @version July 2000
  */
-public class PointCP2
+public class PointCP2 extends PointCP5
 {
   //Instance variables ************************************************
 
+  private char coordinateType;
   /**
    * Contains the current value of X or RHO depending on the type
    * of coordinates.
@@ -35,10 +38,19 @@ public class PointCP2
   /**
    * Constructs a coordinate object, with a type identifier.
    */
-  public PointCP2(double rho, double theta)
+  public PointCP2(char type, double rho, double theta)
   {
-    this.rho = rho;
-    this.theta = theta;
+    if(type != 'C' && type != 'P')
+    throw new IllegalArgumentException();
+    
+    if(String.valueOf(type).toUpperCase() == "P"){
+      this.theta = theta;
+      this.rho = rho;
+    }else{
+      this.theta = theta;
+      this.rho = rho;
+      convertStorageToPolar();
+    }
   }
 	
   
@@ -52,6 +64,39 @@ public class PointCP2
   public double getRho() {return rho;}
   
   public double getTheta() {return theta;}
+
+  /**
+   * Converts Cartesian coordinates to Polar coordinates.
+   */
+  public void convertStorageToPolar()
+  {
+    if(coordinateType != 'P')
+    {
+      //Calculate RHO and THETA
+      double temp = getRho();
+      theta = getTheta();
+      rho = temp;
+      
+      coordinateType = 'P';  //Change coord type identifier
+    }
+  }
+	
+  /**
+   * Converts Polar coordinates to Cartesian coordinates.
+   */
+  public void convertStorageToCartesian()
+  {
+    if(coordinateType != 'C')
+    {
+      //Calculate X and Y
+      double temp = getX();
+      theta = getY();
+      rho = temp;
+   
+      coordinateType = 'C';	//Change coord type identifier
+    }
+  }
+
 
   /**
    * Calculates the distance in between two points using the Pythagorean
@@ -85,7 +130,7 @@ public class PointCP2
     double X = getX();
     double Y = getY();
         
-    return new PointCP2(
+    return new PointCP2('P',
       (Math.cos(radRotation) * X) - (Math.sin(radRotation) * Y),
       (Math.sin(radRotation) * X) + (Math.cos(radRotation) * Y));
   }
