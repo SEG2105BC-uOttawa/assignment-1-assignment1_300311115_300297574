@@ -4,6 +4,8 @@
 
 import java.io.*;
 
+import design2.PointCP2;
+
 /**
  * This class prompts the user for a set of coordinates, and then 
  * converts them from polar to cartesian or vice-versa.
