@@ -27,7 +27,7 @@ public class PointCPPerformanceTest {
         }
         System.out.println("\n\n");
 
-        System.out.println("##### POINTCP3-5 TEST #####\n\n");
+        System.out.println("##### POINTCP3 TEST #####\n\n");
         
         double rho1 = rand.nextDouble();
         double rho2 = rand.nextDouble();
