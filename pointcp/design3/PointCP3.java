@@ -3,7 +3,9 @@ package design3;
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at http://www.site.uottawa.ca/school/research/lloseng/
 
-import design5.PointCP5;
+import java.util.Random;
+
+import design2.PointCP2;
 
 /**
  * This class contains instances of coordinates in either polar or
@@ -15,8 +17,7 @@ import design5.PointCP5;
  * @author Dr Timothy C. Lethbridge
  * @version July 2000
  */
-public class PointCP3 extends PointCP5
-{
+public class PointCP3{
   //Instance variables ************************************************
 
   private char coordinateType;
@@ -143,4 +144,47 @@ public class PointCP3 extends PointCP5
   {
     return "Stored as Cartesian ("+ getX() + "," + getY() + ")";
   }
+
+  public static void TestRunTime(int runTimes, PointCP3 pointA, PointCP3 pointB){
+        double totalTime = 0;
+
+        for(int i=0; i<runTimes; i++){
+            double start = System.nanoTime();
+            pointA.convertStorageToPolar();
+            double end = System.nanoTime();
+            totalTime += (end - start);
+        }
+        System.out.println("convertStorageToPolar() -> The average runtime was : "+totalTime/runTimes+" ns");
+        totalTime = 0;
+
+
+        for(int i=0; i<runTimes; i++){
+            double start = System.nanoTime();
+            pointA.convertStorageToCartesian();
+            double end = System.nanoTime();
+            totalTime += (end - start);
+        }
+        System.out.println("convertStorageToCartesian() -> The average runtime was : "+totalTime/runTimes+" ns");
+        totalTime = 0;
+
+
+        for(int i=0; i<runTimes; i++){
+            double start = System.nanoTime();
+            pointA.getDistance(pointB);
+            double end = System.nanoTime();
+            totalTime += (end - start);
+        }
+        System.out.println("getDistance(PointCP2 pointB) -> The average runtime was : "+totalTime/runTimes+" ns");
+        totalTime = 0;
+
+        double angle = new Random().nextDouble();
+        for(int i=0; i<runTimes; i++){
+            double start = System.nanoTime();
+            pointA.rotatePoint(angle);
+            double end = System.nanoTime();
+            totalTime += (end - start);
+        }
+        System.out.println("rotatePoint(double rotation) -> The average runtime was : "+totalTime/runTimes+" ns");
+        totalTime = 0;
+    }
 }

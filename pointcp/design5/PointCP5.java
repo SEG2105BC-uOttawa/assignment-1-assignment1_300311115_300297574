@@ -3,6 +3,10 @@ package design5;
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at http://www.site.uottawa.ca/school/research/lloseng/
 
+import java.util.Random;
+
+import design2.PointCP2;
+
 /**
  * This class contains instances of coordinates in either polar or
  * cartesian format.  It also provides the utilities to convert
@@ -15,11 +19,25 @@ package design5;
  */
 public abstract class PointCP5
 {
-  // Instance variables **********************************************
-
   private char coordinateType;
 
-  //Instance methods **************************************************
+  private double xOrRho;
+
+  private double yOrTheta;
+
+  public PointCP5(char type, double xOrRho, double yOrTheta){
+    if(type != 'C' && type != 'P') 
+      throw new IllegalArgumentException(); 
+    else if(type =='C')
+    { 
+      this.xOrRho = xOrRho; 
+      this.yOrTheta = xOrRho; 
+    } 
+    else{ 
+      this.xOrRho = Math.cos(Math.toRadians(yOrTheta)) * xOrRho; 
+      this.yOrTheta = Math.sin(Math.toRadians(yOrTheta)) * xOrRho; 
+    } 
+  }
  
   public abstract double getX();
 
@@ -29,40 +47,56 @@ public abstract class PointCP5
   
   public abstract double getTheta();
   
-
-  /**
-   * Calculates the distance in between two points using the Pythagorean
-   * theorem  (C ^ 2 = A ^ 2 + B ^ 2). Not needed until E2.30.
-   *
-   * @param pointA The first point.
-   * @param pointB The second point.
-   * @return The distance between the two points.
-   */
-  public double getDistance(PointCP5 pointB)
-  {
-    // Obtain differences in X and Y, sign is not important as these values
-    // will be squared later.
-    double deltaX = getX() - pointB.getX();
-    double deltaY = getY() - pointB.getY();
-    
-    return Math.sqrt((Math.pow(deltaX, 2) + Math.pow(deltaY, 2)));
-  }
-
-  /**
-   * Rotates the specified point by the specified number of degrees.
-   * Not required until E2.30
-   *
-   * @param point The point to rotate
-   * @param rotation The number of degrees to rotate the point.
-   * @return The rotated image of the original point.
-   */
+  public abstract void convertStorageToPolar();
+	
+  public abstract void convertStorageToCartesian();
+  
   public abstract PointCP5 rotatePoint(double rotation);
 
-  /**
-   * Returns information about the coordinates.
-   *
-   * @return A String containing information about the coordinates.
-   */
   public abstract String toString();
 
+  public abstract double getDistance(PointCP5 pointB);
+
+  public static void TestRunTime(int runTimes, PointCP5 pointA, PointCP5 pointB){
+    double totalTime = 0;
+
+    for(int i=0; i<runTimes; i++){
+        double start = System.nanoTime();
+        pointA.convertStorageToPolar();
+        double end = System.nanoTime();
+        totalTime += (end - start);
+    }
+    System.out.println("convertStorageToPolar() -> The average runtime was : "+totalTime/runTimes+" ns");
+    totalTime = 0;
+
+
+    for(int i=0; i<runTimes; i++){
+        double start = System.nanoTime();
+        pointA.convertStorageToCartesian();
+        double end = System.nanoTime();
+        totalTime += (end - start);
+    }
+    System.out.println("convertStorageToCartesian() -> The average runtime was : "+totalTime/runTimes+" ns");
+    totalTime = 0;
+
+
+    for(int i=0; i<runTimes; i++){
+        double start = System.nanoTime();
+        pointA.getDistance(pointB);
+        double end = System.nanoTime();
+        totalTime += (end - start);
+    }
+    System.out.println("getDistance(PointCP2 pointB) -> The average runtime was : "+totalTime/runTimes+" ns");
+    totalTime = 0;
+
+    double angle = new Random().nextDouble();
+    for(int i=0; i<runTimes; i++){
+        double start = System.nanoTime();
+        pointA.rotatePoint(angle);
+        double end = System.nanoTime();
+        totalTime += (end - start);
+    }
+    System.out.println("rotatePoint(double rotation) -> The average runtime was : "+totalTime/runTimes+" ns");
+    totalTime = 0;
+    }
 }

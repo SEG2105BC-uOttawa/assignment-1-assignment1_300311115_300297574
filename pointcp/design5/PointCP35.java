@@ -1,11 +1,8 @@
-package design2;
+package design5;
 // This file contains material supporting section 2.9 of the textbook:
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at http://www.site.uottawa.ca/school/research/lloseng/
 
-import java.util.Random;
-
-import design5.PointCP5;
 
 /**
  * This class contains instances of coordinates in either polar or
@@ -17,21 +14,20 @@ import design5.PointCP5;
  * @author Dr Timothy C. Lethbridge
  * @version July 2000
  */
-public class PointCP2{
+public class PointCP35 extends PointCP5
+{
   //Instance variables ************************************************
 
   private char coordinateType;
   /**
-   * Contains the current value of X or RHO depending on the type
-   * of coordinates.
+   * Contains the current value of X 
    */
-  private double rho;
+  private double x;
   
   /**
-   * Contains the current value of Y or THETA value depending on the
-   * type of coordinates.
+   * Contains the current value of Y 
    */
-  private double theta;
+  private double y;
 	
   
   //Constructors ******************************************************
@@ -39,33 +35,25 @@ public class PointCP2{
   /**
    * Constructs a coordinate object, with a type identifier.
    */
-  public PointCP2(char type, double rho, double theta)
-  {
-    if(type != 'C' && type != 'P')
-    throw new IllegalArgumentException();
-    
-    if(String.valueOf(type).toUpperCase() == "P"){
-      this.theta = theta;
-      this.rho = rho;
-    }else{
-      this.theta = theta;
-      this.rho = rho;
-    }
+  public PointCP35(char type, double x, double y)
+  {  
+    super(type, x, y);
   }
 	
   
   //Instance methods **************************************************
  
  
-  public double getX() {return (Math.sqrt(Math.pow(rho, 2) + Math.pow(theta, 2)));}
+  public double getX(){return x;}
   
-  public double getY() {return Math.toDegrees(Math.atan2(theta, rho));}
+  public double getY(){return y;}
   
-  public double getRho() {return rho;}
+  public double getRho(){return (Math.cos(Math.toRadians(y)) * x);}
   
-  public double getTheta() {return theta;}
-
-  /**
+  public double getTheta() {return (Math.sin(Math.toRadians(y)) * x);}
+  
+	
+    /**
    * Converts Cartesian coordinates to Polar coordinates.
    */
   public void convertStorageToPolar()
@@ -74,8 +62,8 @@ public class PointCP2{
     {
       //Calculate RHO and THETA
       double temp = getRho();
-      theta = getTheta();
-      rho = temp;
+      y = getTheta();
+      x = temp;
       
       coordinateType = 'P';  //Change coord type identifier
     }
@@ -90,14 +78,14 @@ public class PointCP2{
     {
       //Calculate X and Y
       double temp = getX();
-      theta = getY();
-      rho = temp;
+      y = getY();
+      x = temp;
    
       coordinateType = 'C';	//Change coord type identifier
     }
   }
 
-
+ 
   /**
    * Calculates the distance in between two points using the Pythagorean
    * theorem  (C ^ 2 = A ^ 2 + B ^ 2). Not needed until E2.30.
@@ -106,7 +94,7 @@ public class PointCP2{
    * @param pointB The second point.
    * @return The distance between the two points.
    */
-  public double getDistance(PointCP2 pointB)
+  public double getDistance(PointCP5 pointB)
   {
     // Obtain differences in X and Y, sign is not important as these values
     // will be squared later.
@@ -124,13 +112,13 @@ public class PointCP2{
    * @param rotation The number of degrees to rotate the point.
    * @return The rotated image of the original point.
    */
-  public PointCP2 rotatePoint(double rotation)
+  public PointCP35 rotatePoint(double rotation)
   {
     double radRotation = Math.toRadians(rotation);
     double X = getX();
     double Y = getY();
         
-    return new PointCP2('P',
+    return new PointCP35('C',
       (Math.cos(radRotation) * X) - (Math.sin(radRotation) * Y),
       (Math.sin(radRotation) * X) + (Math.cos(radRotation) * Y));
   }
@@ -142,49 +130,6 @@ public class PointCP2{
    */
   public String toString()
   {
-    return "Stored as Polar [" + getRho() + "," + getTheta() + "]" + "\n";
+    return "Stored as Cartesian ("+ getX() + "," + getY() + ")";
   }
-
-  public static void TestRunTime(int runTimes, PointCP2 pointA, PointCP2 pointB){
-    double totalTime = 0;
-
-    for(int i=0; i<runTimes; i++){
-        double start = System.nanoTime();
-        pointA.convertStorageToPolar();
-        double end = System.nanoTime();
-        totalTime += (end - start);
-    }
-    System.out.println("convertStorageToPolar() -> The average runtime was : "+totalTime/runTimes+" ns");
-    totalTime = 0;
-
-
-    for(int i=0; i<runTimes; i++){
-        double start = System.nanoTime();
-        pointA.convertStorageToCartesian();
-        double end = System.nanoTime();
-        totalTime += (end - start);
-    }
-    System.out.println("convertStorageToCartesian() -> The average runtime was : "+totalTime/runTimes+" ns");
-    totalTime = 0;
-
-
-    for(int i=0; i<runTimes; i++){
-        double start = System.nanoTime();
-        pointA.getDistance(pointB);
-        double end = System.nanoTime();
-        totalTime += (end - start);
-    }
-    System.out.println("getDistance(PointCP2 pointB) -> The average runtime was : "+totalTime/runTimes+" ns");
-    totalTime = 0;
-
-    double angle = new Random().nextDouble();
-    for(int i=0; i<runTimes; i++){
-        double start = System.nanoTime();
-        pointA.rotatePoint(angle);
-        double end = System.nanoTime();
-        totalTime += (end - start);
-    }
-    System.out.println("rotatePoint(double rotation) -> The average runtime was : "+totalTime/runTimes+" ns");
-    totalTime = 0;
-    }
 }
